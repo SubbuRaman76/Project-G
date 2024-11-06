@@ -1,8 +1,7 @@
-version: '3.8'
-
+version: '3'
 services:
-  react-app:
-    build: .
+  app:
+    image: subburaman76/project-dev:latest
     ports:
       - "80:80"
     restart: always

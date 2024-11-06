@@ -4,6 +4,7 @@
 DOCKER_USER="subburaman76"
 DEV_REPO="${DOCKER_USER}/project-dev"
 PROD_REPO="${DOCKER_USER}/project-prod"
+IMAGE=""
 
 # Determine the current branch
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -18,19 +19,31 @@ else
   exit 1
 fi
 
-# Deploy using docker-compose with the specified image
-echo "Deploying ${IMAGE} to the server..."
+echo "Deploying image ${IMAGE} to the server..."
 
-# Update the docker-compose.yml file to use the correct image
-cat <<EOF > docker-compose.yml
-version: '3'
-services:
-  app:
-    image: ${IMAGE}
-    ports:
-      - "80:80"
-    restart: always
-EOF
+# Docker login to Docker Hub (ensure you have Docker credentials set up in Jenkins or manually login if running locally)
+echo "Logging in to Docker Hub..."
+docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
-# Run docker-compose to deploy
+# Build and tag the Docker image
+echo "Building Docker image..."
+docker build -t $IMAGE .
+
+# Push the image to Docker Hub
+echo "Pushing Docker image ${IMAGE} to Docker Hub..."
+docker push $IMAGE
+
+# Navigate to the directory with the docker-compose.yml file (adjust if needed)
+cd /path/to/your/docker-compose/directory
+
+# Make sure to stop and remove the old container if it exists
+echo "Stopping and removing any existing containers..."
+docker-compose down
+
+# Start the container with docker-compose
+echo "Starting the new container with docker-compose..."
 docker-compose up -d
+
+# Optionally, you can clean up unused Docker images
+echo "Cleaning up unused Docker images..."
+docker system prune -f
