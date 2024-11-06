@@ -12,10 +12,10 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 # Set the repository based on the branch
 if [ "$BRANCH" == "dev" ]; then
   IMAGE="${DEV_REPO}:latest"
-elif [ "$BRANCH" == "master" ]; then
+elif [ "$BRANCH" == "main" ]; then
   IMAGE="${PROD_REPO}:latest"
 else
-  echo "Deployment only configured for 'dev' or 'master' branches."
+  echo "Deployment only configured for 'dev' or 'main' branches."
   exit 1
 fi
 
